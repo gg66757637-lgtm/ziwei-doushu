@@ -459,7 +459,7 @@ cd ziwei-doushu
 # 安装依赖
 npm install
 
-# 配置环境变量（只看排盘可以跳过；AI 配置仅在你自己实现了 /api/* 接口时才用得上）
+# 配置环境变量（只看排盘可以跳过；要用 AI 解读再填写密钥）
 cp .env.example .env.local
 
 # 启动开发服务器
@@ -475,7 +475,7 @@ npm test            # 排盘引擎回归（768 盘 × 紫微铁律、夏令时�
 
 每次 push 与 PR 都会在 GitHub Actions 上跑同一套（见 [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)）。
 
-> **注意：开源版不含后端 API 路由。**排盘、命盘展示、合盘起盘都在浏览器里用本仓库的引擎完成，**不需要任何 API Key**。AI 解读（`/api/interpret`）和合盘 AI 分析（`/api/heming`）需要你自己实现接口；没实现之前，这两处会直接提示「开源版不含该接口」，配置 API Key 也不会变成可用（#30 就是这个原因）。
+> **排盘、命盘展示、合盘起盘都在浏览器里用本仓库的引擎完成，不需要任何 API Key。** 本仓库已提供 AI 解读（`/api/interpret`）和合盘 AI 分析（`/api/heming`）的 OpenAI 兼容接口：默认使用智谱免费模型 `glm-4-flash-250414`（配置 `ZHIPU_API_KEY`），也可改用 DeepSeek 或其它兼容接口。密钥在 `.env.local` 里填写；未配置时接口会返回明确错误，页面会提示检查 API 配置。官方原版的断语库与专用 prompt 仍未开源。
 
 ---
 
@@ -617,9 +617,9 @@ npm test            # 排盘引擎回归（768 盘 × 紫微铁律、夏令时�
 | | 内容 |
 |---|---|
 | ✅ **开源** | 排盘引擎（`lib/ziwei/`）、古籍公版原文（`lib/classics/`）、SEO 知识图谱（`lib/seo/`）、Demo 界面、51.8 万样本数据集、13 维解读数据集 v4.0、160 万帧逐帧精读的方法 / 脚本 / 提示词与 17 集公开摘要（`research/nishi-video-reading/`） |
-| ❌ **不开源** | 断语库（`lib/ziwei/db-analysis.ts` 是占位，线上是上万行的 13 主题断语）、AI 解读 prompt、后端 API（`/api/interpret` 等）、用户系统（登录 / 会员 / 支付）、服务端安全（签名、防刷、水印）、部署配置、160 万帧精读用到的视频画面 / 帧图片（康奈尔笔记全文 2026-11-20 起已公开） |
+| ❌ **不开源** | 官方线上断语库（`lib/ziwei/db-analysis.ts` 仍是占位）、官方专用 AI prompt、用户系统（登录 / 会员 / 支付）、服务端安全（签名、防刷、水印）、部署配置、160 万帧精读用到的视频画面 / 帧图片（康奈尔笔记全文 2026-11-20 起已公开） |
 
-如果你需要 AI 解读能力，可以参考 `lib/ziwei/patterns.ts` 和 `heming-knowledge.ts` 里的知识库，结合任意 LLM 自行构建 prompt。
+本仓库已用开源格局库（`lib/ziwei/patterns.ts`、`heming-knowledge.ts`）接好 `/api/interpret` 与 `/api/heming`：默认走智谱免费模型，也可换 DeepSeek 等 OpenAI 兼容接口，配置见 `.env.example`。这与官方线上那套断语库不是同一份实现。
 
 ---
 
